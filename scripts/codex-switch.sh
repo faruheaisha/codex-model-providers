@@ -22,6 +22,7 @@
 # Usage:
 #   ./codex-switch.sh --list
 #   ./codex-switch.sh --preset deepseek
+#   ./codex-switch.sh --preset gpt --model gpt-5.6-terra
 #   ./codex-switch.sh --status
 #   ./codex-switch.sh --preset gpt --restart
 
@@ -31,12 +32,14 @@ CODEX_HOME_DIR="${CODEX_HOME:-$HOME/.codex}"
 CONFIG="${CODEX_HOME_DIR}/config.toml"
 PRESETS="${CODEX_HOME_DIR}/provider-presets.conf"
 PRESET=""
+MODEL=""
 MODE="switch"
 RESTART=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --preset|-p) PRESET="${2:-}"; shift 2 ;;
+    --model|-m) MODEL="${2:-}"; shift 2 ;;
     --list|-l) MODE="list"; shift ;;
     --status|-s) MODE="status"; shift ;;
     --config) CONFIG="${2:-}"; shift 2 ;;
@@ -137,7 +140,7 @@ cp "$CONFIG" "$BACKUP"
 
 TMP="$(mktemp "${TMPDIR:-/tmp}/codex-config.XXXXXX")"
 
-awk -v preset="$PRESET" -v home="$HOME" '
+awk -v preset="$PRESET" -v model_override="$MODEL" -v home="$HOME" '
   function expand(v) {
     if (substr(v, 1, 1) == "~") {
       sub(/^~[\/\\]*/, "", v)
@@ -168,6 +171,7 @@ awk -v preset="$PRESET" -v home="$HOME" '
       managed[key] = 1
       if (section == preset) {
         value = expand(value)
+        if (key == "model" && model_override != "") value = model_override
         val[key] = value
         tkeys[++tn] = key
       }

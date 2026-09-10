@@ -112,6 +112,7 @@ Both scripts read presets from `$CODEX_HOME/provider-presets.conf` (written with
 
 ```bash
 ./codex-switch.sh --preset deepseek
+./codex-switch.sh --preset gpt --model gpt-5.6-terra
 ./codex-switch.sh --list
 ```
 
