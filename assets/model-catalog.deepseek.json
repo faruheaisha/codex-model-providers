@@ -1,0 +1,46 @@
+{
+  "models": [
+    {
+      "slug": "deepseek-flash",
+      "display_name": "DeepSeek-Flash",
+      "description": "Low-latency coding model on the DeepSeek Responses endpoint.",
+      "default_reasoning_level": "high",
+      "supported_reasoning_levels": [
+        { "effort": "low", "description": "Fast responses with lighter reasoning" },
+        { "effort": "high", "description": "Extra high reasoning depth for complex problems" },
+        { "effort": "max", "description": "Maximum reasoning depth for the hardest problems" }
+      ],
+      "shell_type": "shell_command",
+      "visibility": "list",
+      "supported_in_api": true,
+      "priority": 1,
+      "support_verbosity": true,
+      "truncation_policy": { "mode": "tokens", "limit": 10000 },
+      "experimental_supported_tools": [],
+      "model_messages": {
+        "instructions_template": "You are Codex, a coding agent. Replace this value with the full template copied from a stock entry (see references/deepseek-case.md)."
+      }
+    },
+    {
+      "slug": "deepseek-v4-pro",
+      "display_name": "DeepSeek-V4-Pro",
+      "description": "Most capable frontier agentic coding model on the DeepSeek Responses endpoint.",
+      "default_reasoning_level": "high",
+      "supported_reasoning_levels": [
+        { "effort": "low", "description": "Fast responses with lighter reasoning" },
+        { "effort": "high", "description": "Extra high reasoning depth for complex problems" },
+        { "effort": "max", "description": "Maximum reasoning depth for the hardest problems" }
+      ],
+      "shell_type": "shell_command",
+      "visibility": "list",
+      "supported_in_api": true,
+      "priority": 2,
+      "support_verbosity": true,
+      "truncation_policy": { "mode": "tokens", "limit": 10000 },
+      "experimental_supported_tools": [],
+      "model_messages": {
+        "instructions_template": "You are Codex, a coding agent. Replace this value with the full template copied from a stock entry (see references/deepseek-case.md)."
+      }
+    }
+  ]
+}

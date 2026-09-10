@@ -1,0 +1,5 @@
+interface:
+  display_name: "Codex Model Providers"
+  short_description: "Keep GPT and DeepSeek (or any OpenAI-compatible API) usable in Codex"
+  brand_color: "#4F46E5"
+  default_prompt: "Use $codex-model-providers to add DeepSeek next to GPT in Codex and give me a way to switch between them."
