@@ -25,6 +25,7 @@ codex-model-providers/
 ├── references/
 │   ├── codex-provider-facts.md               # 配置键、目录 schema、鉴权交互、热加载实测
 │   ├── deepseek-case.md                      # GPT + DeepSeek 的完整落地案例
+│   ├── merged-model-picker.md                # 为什么「GPT 和 DeepSeek 并列显示」不能只靠配置，以及现成网关
 │   └── sources.md                            # 官方文档 + 社区项目出处
 └── scripts/
     ├── codex-switch.ps1                      # Windows 切换脚本
@@ -83,6 +84,12 @@ web_search = disabled
 每次写入前都会把 `config.toml` 备份到 `$CODEX_HOME/backups/`。
 
 终端用户还有更轻的路子：不动配置文件，直接 `codex --profile deepseek`。
+
+## 想要「GPT 和 DeepSeek 在同一个模型菜单里并列」怎么办
+
+先说结论：**改配置做不到**。实测把一个同时包含 GPT 和 DeepSeek 的目录挂上去，菜单里确实能看到 9 个模型，但选中 DeepSeek 时请求仍然发往 OpenAI，报 `The 'deepseek-flash' model is not supported when using Codex with a ChatGPT account` —— 因为供应商来自 `model_provider`，和「选哪个模型」是解耦的。
+
+要并列显示，必须让 Codex 只认**一个**本地网关，由网关按模型名分流。这件事社区已经做过，不用自己写代理：CodexSplit（专为 Codex Desktop 打造）、Codex-Enhance-Manager、Clipal、alex、9router 等，各自的取舍（尤其是"GPT 走 API key 还是能透传 ChatGPT 订阅"）都记在 [references/merged-model-picker.md](references/merged-model-picker.md)。
 
 ## 这个 skill 里哪些是实测结论
 

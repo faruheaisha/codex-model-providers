@@ -28,6 +28,14 @@ Everything below was fetched and used while building this skill (2026-09-10). Pr
 | [zssggle-rgb/codexsync](https://github.com/zssggle-rgb/codexsync) | Switches Codex providers while preserving session history — confirms that switching, not per-task mixing, is the established model |
 | [AutoGavy/Codex-API-Switcher](https://github.com/AutoGavy/Codex-API-Switcher) | Windows GUI that edits `config.toml` provider entries; useful when a user wants a click-driven switcher instead of a script |
 | [korshunkov/codex-provider-manager](https://github.com/korshunkov/codex-provider-manager) | Local proxy approach that presents several upstream providers behind one OpenAI-compatible endpoint — the escape hatch if a provider cannot speak the Responses API directly |
+| [AITabby/codexsplit](https://github.com/AITabby/codexsplit) | The desktop-app-focused gateway: third-party models inside the desktop model menu, official GPT path left native |
+| [JiangNanGenius/Codex-Enhance-Manager](https://github.com/JiangNanGenius/Codex-Enhance-Manager) | Windows/macOS control panel keeping the official login while a local proxy handles routed providers |
+| [PAIArtCom/Clipal](https://github.com/PAIArtCom/Clipal) | Cross-platform reverse proxy whose OAuth upstreams can carry a ChatGPT/Codex subscription through one endpoint |
+| [OpenMined/alex](https://github.com/OpenMined/alex) | Subscription bonding across harnesses; the "use my ChatGPT subscription elsewhere" direction |
+| [decolua/9router](https://github.com/decolua/9router) | General-purpose multi-upstream gateway (API keys, not subscriptions) |
+| [farion1231/cc-switch](https://github.com/farion1231/cc-switch) | The most established switcher; its Codex provider presets are reused by other tools |
+
+Which of these fits a given request, and the tradeoff that decides it: [merged-model-picker.md](merged-model-picker.md).
 
 ## Local sources of truth on the machine
 

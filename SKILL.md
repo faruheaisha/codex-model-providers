@@ -20,7 +20,7 @@ Four config keys in `$CODEX_HOME/config.toml` (default `~/.codex/config.toml`) d
 
 Consequences that shape every setup:
 
-- **The provider is global, not per model.** Catalog entries carry no provider field, and the desktop app has no provider picker — its `thread/start` always passes `modelProvider: null`, so the config value wins. "Using both" therefore means *both defined, one active, switch before starting a task*. Do not promise mixing providers inside one task.
+- **The provider is global, not per model.** Catalog entries carry no provider field, and the desktop app has no provider picker — its `thread/start` always passes `modelProvider: null`, so the config value wins. "Using both" therefore means *both defined, one active, switch before starting a task*. Do not promise mixing providers inside one task; a catalog listing GPT and third-party slugs together makes the models *visible* but still routes every one of them to the configured provider. When a user asks for a side-by-side model list, read [references/merged-model-picker.md](references/merged-model-picker.md) — it needs a local gateway, and that page lists the existing implementations to use instead of writing one.
 - **Profile files switch the CLI.** `$CODEX_HOME/<name>.config.toml` is a layer over the base config, selected with `codex --profile <name>`. They override keys but cannot delete them, so keep provider-specific keys out of the base layer.
 - **The desktop app re-reads `config.toml`.** Verified: after editing the file, app-server `config/read` returns the new values and a fresh `thread/start` binds the new provider. A task already running keeps its provider. If the model picker still shows the old list, restart the app.
 - **Auth is separate from providers.** A ChatGPT (subscription) login and custom providers coexist: each provider uses its own key/token. Keep `auth.json` untouched.
@@ -120,4 +120,5 @@ Every write is preceded by a timestamped copy of `config.toml` under `$CODEX_HOM
 
 - [references/codex-provider-facts.md](references/codex-provider-facts.md) — config keys with defaults, catalog entry fields, auth interaction, precedence, plus the verification commands and how each fact was established.
 - [references/deepseek-case.md](references/deepseek-case.md) — end-to-end DeepSeek + GPT setup, including a two-model catalog and the exact commands used to prove both paths.
+- [references/merged-model-picker.md](references/merged-model-picker.md) — why a side-by-side GPT + DeepSeek list cannot come from Codex config alone, the test that proves it, and the existing gateways that implement it.
 - [references/sources.md](references/sources.md) — official OpenAI documentation and community projects worth reading before inventing a workaround.
