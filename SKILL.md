@@ -100,13 +100,14 @@ State plainly: which provider is active now, the exact switch command, that a **
 
 ## Scripts
 
-Both scripts read presets from `$CODEX_HOME/provider-presets.json` (written with defaults on first run) and rewrite only the top-level keys a preset defines; `null` removes a key.
+Both scripts read presets from `$CODEX_HOME/provider-presets.conf` (written with defaults on first run) and rewrite only the top-level keys a preset defines; an empty value removes a key, which is how the built-in OpenAI provider and its stock catalog come back.
 
 ```powershell
 .\codex-switch.ps1 -List
-.\codex-switch.ps1 -Preset deepseek      # then start a new task
+.\codex-switch.ps1 -Preset deepseek               # then start a new task
 .\codex-switch.ps1 -Status
-.\codex-switch.ps1 -Preset gpt -Restart  # restarts the desktop app too
+.\codex-switch.ps1 -Preset gpt -Model gpt-5.6-terra
+.\codex-switch.ps1 -Preset gpt -Restart           # restarts the desktop app too
 ```
 
 ```bash
@@ -115,6 +116,8 @@ Both scripts read presets from `$CODEX_HOME/provider-presets.json` (written with
 ```
 
 Every write is preceded by a timestamped copy of `config.toml` under `$CODEX_HOME/backups/`.
+
+`scripts/codex-switch-launcher.ps1` is an optional launcher to copy to `$CODEX_HOME` for users who want a short path (`~\.codex\codex-switch.ps1`). Keep it a launcher only: when a short-path copy duplicated the switching logic instead of forwarding, the two parameter sets drifted and the command failed with *"A parameter cannot be found that matches parameter name 'Preset'"*. Two PowerShell details make forwarding easy to get wrong — a launcher with a `param()` block rejects switches it does not declare (read `$args` instead), and named parameters must be splatted as a hashtable, because an array splats positionally.
 
 ## References
 

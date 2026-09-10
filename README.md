@@ -29,7 +29,8 @@ codex-model-providers/
 │   └── sources.md                            # 官方文档 + 社区项目出处
 └── scripts/
     ├── codex-switch.ps1                      # Windows 切换脚本
-    └── codex-switch.sh                       # macOS / Linux 切换脚本
+    ├── codex-switch.sh                       # macOS / Linux 切换脚本
+    └── codex-switch-launcher.ps1             # 可选：拷到 ~/.codex 当短路径入口（只转发，不重写逻辑）
 ```
 
 ## 安装

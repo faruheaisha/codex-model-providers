@@ -31,6 +31,7 @@ Consequences: the GPT catalog was replaced by a two-entry DeepSeek catalog, and 
 | `~/.codex/deepseek.config.toml` | CLI profile selected with `codex --profile deepseek` |
 | `~/.codex/model-catalog.deepseek.json` | Two-entry catalog used only in DeepSeek mode |
 | `~/.codex/provider-presets.conf` | Preset map used by `codex-switch.ps1` / `.sh` |
+| `~/.codex/codex-switch.ps1` | Optional launcher for the short path; forwards to the skill's script and holds no logic of its own |
 | `~/.codex/backups/` | Timestamped copies made by every switch |
 
 ## Base config header
@@ -112,3 +113,4 @@ Empty values mean "remove this key", which is what restores the stock GPT catalo
 - The DeepSeek key was already inline as `experimental_bearer_token`. It was left in place rather than rotated mid-task; switching it to `env_key = "DEEPSEEK_API_KEY"` plus a user environment variable is the better long-term shape.
 - `notify`, `[desktop]`, `[projects.*]`, and MCP server tables were untouched — a switcher must never rewrite the whole file.
 - The desktop app needed no restart to *use* the new provider for new tasks, but its model picker can keep showing the previous catalog until restarted.
+- The short-path launcher is worth keeping, but only as a launcher: an older copy that still carried its own parameter set rejected the newer `-Preset` spelling with *"A parameter cannot be found that matches parameter name 'Preset'"*.
