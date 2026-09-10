@@ -96,6 +96,7 @@ State plainly: which provider is active now, the exact switch command, that a **
 - **`web_search`** must be off for providers without Codex's standalone search endpoint (the capability defaults to `false` for custom providers).
 - **Secrets.** `env_key` is the documented choice; `experimental_bearer_token` is documented as discouraged and lands in plaintext. If a key is already inline, leave it alone unless the user asks, and never copy it into a repository.
 - **`model_catalog_json` is global.** While it points at a third-party catalog, GPT models disappear from the picker; remove the key — not just the model — when switching back.
+- **TOML strings escape backslashes.** A script that expands `~` into a Windows path and writes `key = "C:\Users\..."` breaks parsing with *"too few unicode value digits"*. Escape `\` (or emit forward slashes) whenever a generated value can contain a path.
 
 ## Scripts
 

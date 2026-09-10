@@ -145,6 +145,13 @@ awk -v preset="$PRESET" -v home="$HOME" '
     }
     return v
   }
+  # TOML basic strings treat backslash as an escape; escape it (and quotes) so
+  # Windows-style values cannot break config.toml parsing.
+  function toml(v) {
+    gsub(/\\/, "\\\\", v)
+    gsub(/"/, "\\\"", v)
+    return v
+  }
   NR == FNR {
     line = $0; sub(/\r$/, "", line)
     if (line ~ /^[[:space:]]*#/ || line ~ /^[[:space:]]*$/) next
@@ -172,9 +179,9 @@ awk -v preset="$PRESET" -v home="$HOME" '
     if (!inbody) {
       if (line ~ /^[[:space:]]*\[/) {
         for (i = 1; i <= tn; i++) if (!written[tkeys[i]] && val[tkeys[i]] != "") {
-          print tkeys[i] " = \"" val[tkeys[i]] "\""
+          print tkeys[i] " = \"" toml(val[tkeys[i]]) "\""
         }
-        if (!written["model"] && val["model"] != "") print "model = \"" val["model"] "\""
+        if (!written["model"] && val["model"] != "") print "model = \"" toml(val["model"]) "\""
         print ""
         inbody = 1
         print line
@@ -184,7 +191,7 @@ awk -v preset="$PRESET" -v home="$HOME" '
         key = line; sub(/^[[:space:]]*/, "", key); sub(/[[:space:]]*=.*$/, "", key)
         if (key in managed) {
           written[key] = 1
-          if (val[key] != "") print key " = \"" val[key] "\""
+          if (val[key] != "") print key " = \"" toml(val[key]) "\""
           next
         }
       }
@@ -197,9 +204,9 @@ awk -v preset="$PRESET" -v home="$HOME" '
   END {
     if (!inbody) {
       for (i = 1; i <= tn; i++) if (!written[tkeys[i]] && val[tkeys[i]] != "") {
-        print tkeys[i] " = \"" val[tkeys[i]] "\""
+        print tkeys[i] " = \"" toml(val[tkeys[i]]) "\""
       }
-      if (!written["model"] && val["model"] != "") print "model = \"" val["model"] "\""
+      if (!written["model"] && val["model"] != "") print "model = \"" toml(val["model"]) "\""
     }
   }
 ' "$PRESETS" "$CONFIG" > "$TMP"

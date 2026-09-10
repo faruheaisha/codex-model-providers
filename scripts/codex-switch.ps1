@@ -84,6 +84,14 @@ function Read-Presets {
     return $result
 }
 
+# TOML basic strings treat backslash as an escape. Windows paths coming from
+# presets (~ expansion, drive letters) must be escaped or config.toml stops
+# parsing ("too few unicode value digits").
+function ConvertTo-TomlValue {
+    param([string]$Value)
+    return ($Value -replace '\\', '\\') -replace '"', '\"'
+}
+
 $presets = Read-Presets -Path $PresetsPath
 
 if ($List -or (-not $Preset -and -not $Status)) {
@@ -153,7 +161,7 @@ foreach ($line in $header) {
         if ($managed.Contains($key)) {
             $seen[$key] = $true
             $value = $target[$key]
-            if ($value) { $newHeader.Add("$key = `"$value`"") }
+            if ($value) { $newHeader.Add("$key = `"$(ConvertTo-TomlValue $value)`"") }
             continue
         }
         $newHeader.Add($line)
@@ -164,11 +172,11 @@ foreach ($line in $header) {
 }
 foreach ($key in $target.Keys) {
     if (-not $seen.ContainsKey($key) -and $target[$key]) {
-        $newHeader.Add("$key = `"$($target[$key])`"")
+        $newHeader.Add("$key = `"$(ConvertTo-TomlValue $target[$key])`"")
     }
 }
 if (-not $seen.ContainsKey('model') -and $target['model']) {
-    $newHeader.Insert(0, "model = `"$($target['model'])`"")
+    $newHeader.Insert(0, "model = `"$(ConvertTo-TomlValue $target['model'])`"")
 }
 
 $output = @()
