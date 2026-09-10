@@ -19,10 +19,12 @@
         .\codex-switch.ps1 -Preset deepseek
         .\codex-switch.ps1 -Status
         .\codex-switch.ps1 -Preset gpt -Restart
+        .\codex-switch.ps1 -Preset gpt -Model gpt-5.6-terra
 #>
 [CmdletBinding()]
 param(
     [string]$Preset,
+    [string]$Model,
     [switch]$List,
     [switch]$Status,
     [switch]$Restart,
@@ -141,6 +143,7 @@ if (-not $presets.Contains($Preset)) {
     throw "Unknown preset '$Preset'. Available: $($presets.Keys -join ', ')"
 }
 $target = $presets[$Preset]
+if ($Model) { $target['model'] = $Model }
 
 # Managed keys: every key any preset defines, so switching away cleans up.
 $managed = New-Object System.Collections.Generic.HashSet[string]
