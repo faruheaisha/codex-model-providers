@@ -1,6 +1,6 @@
 # Sources
 
-Everything below was fetched and used while building this skill (2026-09-10). Prefer these over blog posts, and re-check after Codex updates, since provider plumbing moves quickly.
+Everything below was fetched and used while building this skill (2026-09-10, extended 2026-09-11 for the OpenCode Go gateway). Prefer these over blog posts, and re-check after Codex updates, since provider plumbing moves quickly.
 
 ## Official OpenAI
 
@@ -20,6 +20,9 @@ Everything below was fetched and used while building this skill (2026-09-10). Pr
 | [DeepSeek API docs](https://api-docs.deepseek.com/) | "The DeepSeek API uses an API format compatible with OpenAI/Anthropic"; `base_url (OpenAI) = https://api.deepseek.com` |
 | [DeepSeek: Using the Responses API](https://api-docs.deepseek.com/guides/responses_api) | The surface Codex talks to when `wire_api = "responses"` |
 | [DeepSeek: Using the Anthropic API](https://api-docs.deepseek.com/guides/anthropic_api) | Relevant when wiring the same key into Anthropic-shaped tools instead of Codex |
+| [OpenCode Go](https://opencode.ai/docs/go/) | Subscription gateway for open coding models. Source for the session-header requirement, the *Validated Clients* list (Codex included), and per-model usage caps and pricing |
+| [OpenCode Zen](https://opencode.ai/docs/zen/) | The pay-per-request sibling and its full endpoint table — where the DeepSeek model ids and their documented `…/v1/chat/completions` URL come from. Its table does **not** list the `…/v1/responses` path that Codex actually needs |
+| [codex discussion 7782](https://github.com/openai/codex/discussions/7782) | The removal of `wire_api = "chat"`; linked from the error Codex now prints |
 
 ## Community projects (same problem, different tools)
 
@@ -46,3 +49,4 @@ Which of these fits a given request, and the tradeoff that decides it: [merged-m
 | Stock catalog cache (full entries, all fields) | `$CODEX_HOME/models_cache.json` |
 | Current credentials and auth mode | `$CODEX_HOME/auth.json` (`auth_mode`, `tokens`) |
 | CLI help for the flags used here | `codex --help`, `codex exec --help`, `codex debug --help` |
+| What Codex really puts on the wire | Point a temporary provider at a local `HttpListener` and read the captured headers — see [codex-provider-facts.md](codex-provider-facts.md#what-codex-actually-sends-captured-not-inferred) |

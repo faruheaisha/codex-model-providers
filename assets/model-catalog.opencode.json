@@ -1,0 +1,29 @@
+{
+  "models": [
+    {
+      "slug": "deepseek-v4.1-flash",
+      "display_name": "DeepSeek-V4.1-Flash",
+      "description": "OpenCode Go (Zen) subscription model. Fast frontier coding model with reasoning.",
+      "default_reasoning_level": "high",
+      "supported_reasoning_levels": [
+        { "effort": "low", "description": "Fast responses with lighter reasoning" },
+        { "effort": "high", "description": "Extra high reasoning depth for complex problems" },
+        { "effort": "max", "description": "Maximum reasoning depth for the hardest problems" }
+      ],
+      "shell_type": "shell_command",
+      "visibility": "list",
+      "supported_in_api": true,
+      "priority": 1,
+      "support_verbosity": true,
+      "truncation_policy": { "mode": "tokens", "limit": 10000 },
+      "experimental_supported_tools": [],
+      "apply_patch_tool_type": "freeform",
+      "input_modalities": ["text"],
+      "context_window": 1048576,
+      "max_context_window": 1048576,
+      "model_messages": {
+        "instructions_template": "You are Codex, a coding agent. Replace this value with the full template copied from a stock entry (see references/opencode-go-case.md)."
+      }
+    }
+  ]
+}

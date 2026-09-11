@@ -43,6 +43,8 @@ Details, verified key lists, and evidence: [references/codex-provider-facts.md](
 | Terminal/scripts only | One base config + one `--profile` file per provider |
 | Desktop app | Keep both providers in one `config.toml`, switch the top-level keys with a script, then start a new task |
 | Secrets must stay out of the file | `env_key` on the provider + a user environment variable |
+| Third-party model is not in the picker | Ship a `model_catalog_json` per provider; see step 3 |
+| Several user-supplied gateways at once | One provider table + one preset per gateway; the scripts manage the union of preset keys |
 
 The desktop app is the common case; `scripts/codex-switch.ps1` (Windows) and `scripts/codex-switch.sh` (macOS/Linux) implement it with a small preset map, so the user edits JSON instead of TOML.
 
@@ -58,6 +60,13 @@ name = "deepseek"
 base_url = "https://api.deepseek.com/"
 wire_api = "responses"
 env_key = "DEEPSEEK_API_KEY"      # preferred over experimental_bearer_token
+
+# one table per gateway/provider; all idle until a preset selects them
+[model_providers.opencode]
+name = "opencode-go"
+base_url = "https://opencode.ai/zen/go/v1/"   # trailing slash; see Traps
+wire_api = "responses"
+env_key = "OPENCODE_API_KEY"
 ```
 
 `$CODEX_HOME/deepseek.config.toml` (used as `codex --profile deepseek`):
@@ -89,7 +98,10 @@ State plainly: which provider is active now, the exact switch command, that a **
 ## Traps
 
 - **Reserved provider ids.** `openai`, `ollama`, `lmstudio` cannot be redefined; pick a new id.
-- **`wire_api`** accepts only `responses`; Chat Completions support is deprecated. A provider that only speaks Chat Completions needs a translating gateway.
+- **`wire_api` accepts only `responses`.** Chat Completions was removed, not deprecated: `wire_api = "chat"` is a config-parse failure ("`wire_api = \"chat\"` is no longer supported") and Codex will not start. When a user hands you a `.../chat/completions` URL, **probe the sibling `.../responses` path on the same base before reaching for a proxy** — gateways frequently serve both and document only one. A provider with genuinely no Responses endpoint needs a translating gateway.
+- **Gateways may demand request headers Codex does not send.** OpenCode Go rejects every request without a session header (`400 MissingSessionID`). Codex already sends `session-id`, which Go accepts, so nothing was configured — but check the gateway's own docs for a client list first, then probe. Evidence and the full header dump: [references/opencode-go-case.md](references/opencode-go-case.md). Only add `http_headers` when a required name is genuinely missing, and never fake a session id you could get from the client.
+- **`base_url` controls path joining, so keep the trailing slash.** Codex joins the wire path onto `base_url`: `https://host/go/v1/` + `responses` → `https://host/go/v1/responses`. Without the slash the last segment is replaced rather than extended.
+- **A custom provider makes Codex probe `{base_url}/models`.** If the endpoint answers in OpenAI's `{"object":"list","data":[…]}` shape, Codex fails to decode it and logs `failed to refresh available models: … missing field 'models'`. Non-fatal, but noisy, and unknown slugs then get "fallback model metadata". Setting `model_catalog_json` fixes both at once — the probe stops and the slug resolves.
 - **Do not leak provider-specific keys into the base layer.** Everything in the base config applies in every profile. `service_tier = "default"`, for example, is sent to third-party endpoints too and can come back as HTTP 400.
 - **`preferred_auth_method = "apikey"` / `forced_login_method = "api"`** block ChatGPT-subscription models. Remove them when the GPT path must work; a provider carrying its own token does not need them.
 - **Slug is not a friendly name.** If the provider rejects a slug, set it to the provider's own model id.
@@ -124,5 +136,6 @@ Every write is preceded by a timestamped copy of `config.toml` under `$CODEX_HOM
 
 - [references/codex-provider-facts.md](references/codex-provider-facts.md) — config keys with defaults, catalog entry fields, auth interaction, precedence, plus the verification commands and how each fact was established.
 - [references/deepseek-case.md](references/deepseek-case.md) — end-to-end DeepSeek + GPT setup, including a two-model catalog and the exact commands used to prove both paths.
+- [references/opencode-go-case.md](references/opencode-go-case.md) — the harder shape: a subscription **gateway** handed over as a `chat/completions` URL, the `wire_api` failure, finding its undocumented `/responses` endpoint, the session-header requirement, and the captured list of headers Codex really sends.
 - [references/merged-model-picker.md](references/merged-model-picker.md) — why a side-by-side GPT + DeepSeek list cannot come from Codex config alone, the test that proves it, and the existing gateways that implement it.
 - [references/sources.md](references/sources.md) — official OpenAI documentation and community projects worth reading before inventing a workaround.
